@@ -1,0 +1,19 @@
+{
+  "name": "pub-pkg-highlight",
+  "version": "0.2.3",
+  "description": "pub-server package for injecting highlight.js",
+  "main": "pub-config.js",
+  "dependencies": {
+  },
+  "keywords": [
+    "publish",
+    "syntax",
+    "highlight"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jldec/pub-pkg-highlight.git"
+  },
+  "author": "jurgen leschner",
+  "license": "MIT"
+}
