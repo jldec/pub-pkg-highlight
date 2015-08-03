@@ -4,7 +4,7 @@ pub-server package for injecting [highlight.js](https://github.com/isagalaev/hig
 
 ### installation
 
-This package is included with pub-server and used together with the default markdown-rendering theme [pub-theme-gfm]
+This package is included with pub-server and used together with the default markdown-rendering theme [pub-theme-doc]
 
 ```sh
 npm install -g pub-server
