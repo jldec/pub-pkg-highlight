@@ -1,0 +1,18 @@
+{
+  "name": "pub-pkg-highlight-example",
+  "version": "0",
+  "description": "-",
+  "repository": "-",
+  "readme": "-",
+  "main": "pub-config.js",
+  "author": "Jürgen Leschner",
+  "license": "MIT",
+  "dependencies": {
+    "pub-pkg-highlight": "^4.2.1"
+  },
+  "scripts": {
+    "develop": "pub",
+    "generate": "pub -O",
+    "static": "pub -S ../docs"
+  }
+}

@@ -1,5 +1,4 @@
 env
-*.png
 *.rdb
 *.seed
 *.log
@@ -9,13 +8,8 @@ env
 *.pid
 *.swp
 *.swo
-*.sock
-support
-test
-examples
-example
-docs
-dist
-coverage
+coverage/
+node_modules/
+benchmarks/graphs
 .DS_Store
 Thumbs.db

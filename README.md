@@ -1,26 +1,52 @@
 # pub-pkg-highlight
 
-pub-server package for injecting [highlight.js](https://github.com/isagalaev/highlight.js)
+pub-server package for injecting browser-based syntax highlighting using [highlight.js](https://highlightjs.org/).
+
+Includes support for the following languaes:
+
+- Apache
+- Bash
+- C#
+- C++
+- CSS
+- CoffeeScript
+- Diff
+- HTML, XML
+- HTTP
+- Ini, TOML
+- JSON
+- Java
+- JavaScript
+- Makefile
+- Markdown
+- Nginx
+- Objective-C
+- PHP
+- Perl
+- Properties
+- Python
+- Ruby
+- SQL
+- Shell Session
+
+A website with some examples can be found at https://jldec.github.io/pub-pkg-highlight
+
+See highlight.js [downloads](https://highlightjs.org/download/) for additional languages.
 
 ### installation
 
-This package is included with pub-server and used together with the default markdown-rendering theme [pub-theme-doc]
+This package is included with pub-server.
 
-```sh
-npm install -g pub-server
-```
+To enable it, add `pub-pkg-highlight` to your pub-config `pkgs`.
 
 ### usage
 
 Layout templates which use `{{{injectCss}}}` and `{{{injectJs}}}` will automatically link to:
 
-- `/css/highlight-github-0.2.3.css`
-- `/js/highlight-0.2.3.min.js`
-- `/js/pub-pkg-highlight-0.2.3.js`
-
-The version numbers listed above will be updated over time, and will be tracked by
-the version number of this npm module.
-
+- `/css/highlight-9.14.2.min.css`
+- `/js/highlight-9.14.2.min.js`
+- `/js/pub-pkg-highlight.js`
 
 ### credits
-syntax highlighting thanks to https://github.com/isagalaev/highlight.js
+Syntax highlighting thanks to highlight.js [authors](https://github.com/highlightjs/highlight.js/blob/master/AUTHORS.en.txt).
+Highlight.js is released under the BSD License.
