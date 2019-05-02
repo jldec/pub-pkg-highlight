@@ -1,127 +1,4 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-/**
- * jqueryview.js
- *
- * pub-generator plugin for jquery views
- * copyright 2015-2019, Jurgen Leschner - github.com/jldec - MIT license
- *
- * listens for 'nav', 'loaded', and 'updatedText' events
- * emits 'update-view' when content has been replaced
- *
- * minimize html replacements by looking for attributes
- * data-render-layout
- * data-render-page
- * data-render-html
- *
- *
-**/
-
-module.exports = function(generator, window) {
-
-  var $ = window.$;
-  var opts = generator.opts;
-  var u = generator.util;
-  var lang = generator.handlebars.pageLang;
-  var log = opts.log;
-
-  // if there is no data-render-layout attribute, updateLayout will not be called
-  var $layout = $('[data-render-layout]');
-
-  var view = {
-    start: start, // call start() after views are created
-    stop: stop    // call stop() before views are deleted
-  };
-
-  return view;
-
-  function start() {
-    generator.on('nav', nav);
-    generator.on('loaded', nav); // full reload after structural edits
-    generator.on('updatedText', updateHtml); // handle minor edits
-  }
-
-  function stop() {
-    generator.off('nav', nav);
-    generator.off('loaded', nav);
-    generator.off('updatedText', updateHtml);
-  }
-
-  // navigate or reload by regenerating just the page or the whole layout
-  function nav(path, query, hash, forceReload) {
-
-    var reload = forceReload || !path;
-
-    path =  path  || location.pathname;
-    query = query || (reload && location.search) || '';
-    hash =  hash  || (reload && location.hash)   || '';
-
-    var newpage = generator.findPage(path);
-    if (!newpage) return generator.emit('notify', 'Oops, jqueryview cannot find new page object ' + path);
-
-    var oldpath = u.unPrefix(location.pathname, opts.staticRoot);
-    var oldpage = generator.findPage(oldpath);
-    if (!oldpage) return generator.emit('notify', 'Oops, jqueryview cannot find current page object ' + oldpath);
-
-    if (!reload && newpage === oldpage) return; // hash navigation doesn't require repaint
-
-    // simulate server-side request
-    generator.req = { query: query ? require('querystring').parse(query.slice(1)) : {} };
-
-    if ($layout.length && (reload || layoutChanged(oldpage, newpage))) {
-      updateLayout();
-      return;
-    }
-
-    // else just update page
-    updatePage();
-
-    ///// helper functions /////
-
-    function updateLayout() {
-      var layout = generator.layoutTemplate(newpage);
-      $layout.html(generator.renderLayout(newpage));
-      $layout.attr('data-render-layout', layout);
-      log('jqueryview updateLayout', path, query, hash);
-      generator.emit('update-view', path, query, hash, window, $layout);
-    }
-
-    function updatePage() {
-      var $page = $('[data-render-page]');
-      if (!$page.length) return generator.emit('notify', 'Oops, jqueryview cannot update page ' + path);
-
-      $page.html(generator.renderPage(newpage));
-      $page.attr('data-render-page', newpage._href);
-      log('jqueryview updatePage:', path, query, hash)
-      generator.emit('update-view', path, query, hash, window, $page);
-    }
-
-    // return true if newpage layout is different from current layout
-    function layoutChanged(oldpage, newpage) {
-      if (oldpage && oldpage.fixlayout) return true;
-      if (lang(oldpage) !== lang(newpage)) return true;
-      var currentlayout = $layout.attr('data-render-layout') || 'main-layout';
-      var newlayout = generator.layoutTemplate(newpage);
-      return (newlayout !== currentlayout);
-    }
-
-  }
-
-  // this won't work if the href of a fragment is edited
-  function updateHtml(href) {
-    var fragment = generator.fragment$[href];
-    if (!fragment) return generator.emit('notify', 'Oops, jqueryview cannot find fragment: ' + href);
-
-    var $html = $('[data-render-html="' + href + '"]');
-    if (!$html.length) return generator.emit('notify', 'Oops, jqueryview cannot update html for fragment: ' + href);
-
-    $html.html(generator.renderHtml(fragment));
-    log('jqueryview updateHtml', location.pathname, location.search, location.hash);
-    generator.emit('update-view', location.pathname, location.search, location.hash, window, $html);
-  }
-
-}
-
-},{"querystring":7}],2:[function(require,module,exports){
 (function (process){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -1167,6 +1044,16 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
   }
 
   /**
+   * Escapes RegExp characters in the given string.
+   *
+   * @param {string} s
+   * @api private
+   */
+  function escapeRegExp(s) {
+    return s.replace(/([.+*?=^!:${}()[\]|/\\])/g, '\\$1');
+  }
+
+  /**
    * Initialize a new "request" `Context`
    * with the given `path` and optional initial `state`.
    *
@@ -1186,7 +1073,8 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
     var i = path.indexOf('?');
 
     this.canonicalPath = path;
-    this.path = path.replace(pageBase, '') || '/';
+    var re = new RegExp('^' + escapeRegExp(pageBase));
+    this.path = path.replace(re, '') || '/';
     if (hashbang) this.path = this.path.replace('#!', '') || '/';
 
     this.title = (hasDocument && window.document.title);
@@ -1233,7 +1121,7 @@ pathToRegexp_1.tokensToRegExp = tokensToRegExp_1;
 
   Context.prototype.save = function() {
     var page = this.page;
-    if (hasHistory && page._window.location.protocol !== 'file:') {
+    if (hasHistory) {
         page._window.history.replaceState(this.state, this.title,
           page._hashbang && this.path !== '/' ? '#!' + this.path : this.canonicalPath);
     }
@@ -1325,7 +1213,130 @@ return page_js;
 })));
 
 }).call(this,require('_process'))
-},{"_process":4}],3:[function(require,module,exports){
+},{"_process":4}],2:[function(require,module,exports){
+/**
+ * jqueryview.js
+ *
+ * pub-generator plugin for jquery views
+ * copyright 2015-2019, Jurgen Leschner - github.com/jldec - MIT license
+ *
+ * listens for 'nav', 'loaded', and 'updatedText' events
+ * emits 'update-view' when content has been replaced
+ *
+ * minimize html replacements by looking for attributes
+ * data-render-layout
+ * data-render-page
+ * data-render-html
+ *
+ *
+**/
+
+module.exports = function(generator, window) {
+
+  var $ = window.$;
+  var opts = generator.opts;
+  var u = generator.util;
+  var lang = generator.handlebars.pageLang;
+  var log = opts.log;
+
+  // if there is no data-render-layout attribute, updateLayout will not be called
+  var $layout = $('[data-render-layout]');
+
+  var view = {
+    start: start, // call start() after views are created
+    stop: stop    // call stop() before views are deleted
+  };
+
+  return view;
+
+  function start() {
+    generator.on('nav', nav);
+    generator.on('loaded', nav); // full reload after structural edits
+    generator.on('updatedText', updateHtml); // handle minor edits
+  }
+
+  function stop() {
+    generator.off('nav', nav);
+    generator.off('loaded', nav);
+    generator.off('updatedText', updateHtml);
+  }
+
+  // navigate or reload by regenerating just the page or the whole layout
+  function nav(path, query, hash, forceReload) {
+
+    var reload = forceReload || !path;
+
+    path =  path  || location.pathname;
+    query = query || (reload && location.search) || '';
+    hash =  hash  || (reload && location.hash)   || '';
+
+    var newpage = generator.findPage(path);
+    if (!newpage) return generator.emit('notify', 'Oops, jqueryview cannot find new page object ' + path);
+
+    var oldpath = u.unPrefix(location.pathname, opts.staticRoot);
+    var oldpage = generator.findPage(oldpath);
+    if (!oldpage) return generator.emit('notify', 'Oops, jqueryview cannot find current page object ' + oldpath);
+
+    if (!reload && newpage === oldpage) return; // hash navigation doesn't require repaint
+
+    // simulate server-side request
+    generator.req = { query: query ? require('querystring').parse(query.slice(1)) : {} };
+
+    if ($layout.length && (reload || layoutChanged(oldpage, newpage))) {
+      updateLayout();
+      return;
+    }
+
+    // else just update page
+    updatePage();
+
+    ///// helper functions /////
+
+    function updateLayout() {
+      var layout = generator.layoutTemplate(newpage);
+      $layout.html(generator.renderLayout(newpage));
+      $layout.attr('data-render-layout', layout);
+      log('jqueryview updateLayout', path, query, hash);
+      generator.emit('update-view', path, query, hash, window, $layout);
+    }
+
+    function updatePage() {
+      var $page = $('[data-render-page]');
+      if (!$page.length) return generator.emit('notify', 'Oops, jqueryview cannot update page ' + path);
+
+      $page.html(generator.renderPage(newpage));
+      $page.attr('data-render-page', newpage._href);
+      log('jqueryview updatePage:', path, query, hash)
+      generator.emit('update-view', path, query, hash, window, $page);
+    }
+
+    // return true if newpage layout is different from current layout
+    function layoutChanged(oldpage, newpage) {
+      if (oldpage && oldpage.fixlayout) return true;
+      if (lang(oldpage) !== lang(newpage)) return true;
+      var currentlayout = $layout.attr('data-render-layout') || 'main-layout';
+      var newlayout = generator.layoutTemplate(newpage);
+      return (newlayout !== currentlayout);
+    }
+
+  }
+
+  // this won't work if the href of a fragment is edited
+  function updateHtml(href) {
+    var fragment = generator.fragment$[href];
+    if (!fragment) return generator.emit('notify', 'Oops, jqueryview cannot find fragment: ' + href);
+
+    var $html = $('[data-render-html="' + href + '"]');
+    if (!$html.length) return generator.emit('notify', 'Oops, jqueryview cannot update html for fragment: ' + href);
+
+    $html.html(generator.renderHtml(fragment));
+    log('jqueryview updateHtml', location.pathname, location.search, location.hash);
+    generator.emit('update-view', location.pathname, location.search, location.hash, window, $html);
+  }
+
+}
+
+},{"querystring":7}],3:[function(require,module,exports){
 /*
  * pub-preview.js
  *
@@ -1400,7 +1411,7 @@ $(function(){
 
 });
 
-},{"./jqueryview":1,"page":2,"querystring":7}],4:[function(require,module,exports){
+},{"./jqueryview":2,"page":1,"querystring":7}],4:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 

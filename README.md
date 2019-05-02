@@ -9,8 +9,8 @@ Includes support for the following languaes:
 - C#
 - C++
 - CSS
-- CoffeeScript
 - Diff
+- Go
 - HTML, XML
 - HTTP
 - Ini, TOML
@@ -26,8 +26,12 @@ Includes support for the following languaes:
 - Properties
 - Python
 - Ruby
+- Rust
 - SQL
 - Shell Session
+- Swift
+- TypeScript
+- YAML
 
 A website with some examples can be found at https://jldec.github.io/pub-pkg-highlight
 

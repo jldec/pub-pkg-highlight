@@ -1,4 +1,9 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+require("/Users/jleschner/pub/server/node_modules/pub-pkg-seo/generator-plugin.js")(generator);
+require("/Users/jleschner/pub/server/node_modules/pub-theme-doc/plugins/generator-plugin.js")(generator);
+require("/Users/jleschner/pub/server/node_modules/pub-pkg-font-awesome/generator-plugin.js")(generator);
+
+},{"/Users/jleschner/pub/server/node_modules/pub-pkg-font-awesome/generator-plugin.js":2,"/Users/jleschner/pub/server/node_modules/pub-pkg-seo/generator-plugin.js":3,"/Users/jleschner/pub/server/node_modules/pub-theme-doc/plugins/generator-plugin.js":4}],2:[function(require,module,exports){
 module.exports = function(generator) {
 
 var u = generator.util;
@@ -838,15 +843,17 @@ renderer.em = function em(text) {
 
 }
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
+/*eslint no-unused-vars: ["error", { "varsIgnorePattern": "u", "argsIgnorePattern": "frame", }]*/
+
 module.exports = function(generator) {
   var u = generator.util;
   var opts = generator.opts;
   var log = opts.log;
   var hb = generator.handlebars;
 
-  if (/\/\/localhost/.test(opts.appUrl)) {
-    log('WARNING: pub-pkg-seo sitemap using appUrl %s', opts.appUrl);
+  if (!opts.appUrl || /\/\/localhost/.test(opts.appUrl)) {
+    log('WARNING: pub-pkg-seo sitemap using appUrl "%s"', opts.appUrl);
   }
 
   hb.registerHelper('metaSeo', function(frame) {
@@ -855,14 +862,9 @@ module.exports = function(generator) {
     }
   });
 
-}
+};
 
-},{}],3:[function(require,module,exports){
-require("/Users/jleschner/pub/server/node_modules/pub-pkg-seo/generator-plugin.js")(generator);
-require("/Users/jleschner/pub/server/node_modules/pub-theme-doc/plugins/generator-plugin.js")(generator);
-require("/Users/jleschner/pub/server/node_modules/pub-pkg-font-awesome/generator-plugin.js")(generator);
-
-},{"/Users/jleschner/pub/server/node_modules/pub-pkg-font-awesome/generator-plugin.js":1,"/Users/jleschner/pub/server/node_modules/pub-pkg-seo/generator-plugin.js":2,"/Users/jleschner/pub/server/node_modules/pub-theme-doc/plugins/generator-plugin.js":4}],4:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 module.exports = function(generator) {
 
   var u = generator.util;
@@ -898,4 +900,4 @@ module.exports = function(generator) {
 
 }
 
-},{}]},{},[3]);
+},{}]},{},[1]);

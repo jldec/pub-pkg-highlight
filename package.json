@@ -1,9 +1,15 @@
 {
   "name": "pub-pkg-highlight",
-  "version": "9.14.2",
+  "version": "9.15.6",
   "description": "pub-server package for injecting highlight.js",
   "main": "pub-config.js",
   "dependencies": {},
+  "files": [
+    "css/",
+    "js/",
+    "pub-config.js",
+    "LICENSE-HIGHLIGHT"
+  ],
   "keywords": [
     "publish",
     "syntax",
