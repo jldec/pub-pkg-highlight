@@ -47,8 +47,8 @@ To enable it, add `pub-pkg-highlight` to your pub-config `pkgs`.
 
 Layout templates which use `{{{injectCss}}}` and `{{{injectJs}}}` will automatically link to:
 
-- `/css/highlight-9.14.2.min.css`
-- `/js/highlight-9.14.2.min.js`
+- `/css/highlight-9.15.6-default.css`
+- `/js/highlight-9.15.6.min.js`
 - `/js/pub-pkg-highlight.js`
 
 ### credits
