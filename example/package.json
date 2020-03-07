@@ -8,7 +8,7 @@
   "author": "Jürgen Leschner",
   "license": "MIT",
   "dependencies": {
-    "pub-pkg-highlight": "^9.15.6"
+    "pub-pkg-highlight": "^9.18.1"
   },
   "scripts": {
     "develop": "pub",

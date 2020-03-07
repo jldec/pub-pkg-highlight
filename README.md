@@ -1,3 +1,6 @@
+---- / ----
+name: README
+
 # pub-pkg-highlight
 
 pub-server package for injecting browser-based syntax highlighting using [highlight.js](https://highlightjs.org/).
