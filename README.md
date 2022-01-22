@@ -20,8 +20,8 @@ To enable it, add `pub-pkg-highlight` to your pub-config `pkgs`.
 
 Layout templates which use `{{{injectCss}}}` and `{{{injectJs}}}` will automatically link to:
 
-- `/css/highlight-9.18.1-github.css`
-- `/js/highlight-9.18.1.min.js`
+- `/css/highlight-11.4.0-github.css`
+- `/js/highlight-11.4.0.min.js`
 - `/js/pub-pkg-highlight.js`
 
 ### credits

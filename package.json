@@ -1,6 +1,6 @@
 {
   "name": "pub-pkg-highlight",
-  "version": "9.18.1",
+  "version": "11.4.0",
   "description": "pub-server package for injecting highlight.js",
   "main": "pub-config.js",
   "dependencies": {},
